@@ -33,12 +33,14 @@ addpath(genpath('..\Auswertung\'));
 % Fitting the data
 % ----------------------------------------------------------------------
 
-% find out number of spectra
-[temp, spectra] = size(data(3).XData);
+% find out number of pixels of the CCD and the number of spectra
+[campx, spectra] = size(data(3).XData);
 
 % fit all the spectra
 for n = 1:spectra-120
-    [ftemp, goftemp, x, y] = fittingData(data(3), x_min, x_max, numberofgaussians, 1);
+    [ftemp, goftemp, x, y] = fittingData(data(3), campx,...
+                                         x_min, x_max,...
+                                         numberofgaussians, n);
     % save fit data of all fits
     f{n} = ftemp;
     gof{n} = goftemp;

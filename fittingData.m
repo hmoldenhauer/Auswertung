@@ -1,7 +1,24 @@
-function [f, gof, x, y] = fittingData(data, x_min, x_max, numberofgaussians, n)
+% function that will allow fitting to specified fittype
+%
+% output arguments
+% f = fit data
+% gof = goodness of fit data
+% x = x data of the chosen interval
+% y = y data of the chosen inverval
+%
+% input arguments
+%
+% data = all measured data read in before
+% campx = number of pixels the camera has
+% x_min = min x value
+% x_max = max x value
+% numberofgaussians = number of gaussian functions which will be used to
+%                     fit
+% n = iterator to fit over a complete set of data
 
-% find out number of pixels of the CCD and the number of spectra
-[campx, spectra] = size(data.XData);
+function [f, gof, x, y] = fittingData(data, campx,...
+                                      x_min, x_max,...
+                                      numberofgaussians, n)
 
 % define some helping variables
 limit = (n-1)*campx;
