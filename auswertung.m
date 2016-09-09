@@ -12,8 +12,8 @@ start = 1;
 numberofgaussians = 2;
 
 % define range for fit window
-x_min = 896;
-x_max = 911;
+x_min = 0; % 896
+x_max = 1000; % 911
 
 % ----------------------------------------------------------------------
 % Definitions needed by the program
@@ -49,20 +49,20 @@ end
     
 % plot fit
 hold on;
-plot(ftemp,x,y);
+plot(f{n},x,y);
 plot(pos,amps, 'ro');
 
 % plot seperate fit functions used
-if false
+if true
 for k = 1:numberofgaussians
     if k == 1
-        fplot(@(x) f.('y0')+f.('a')*x,...
+        fplot(@(x) f{n}.('y0')+f{n}.('a')*x,...
              [x(1),x(end)]);
     end
     ampstr = strcat('amp', num2str(k));
     posstr = strcat('pos', num2str(k));
     varstr = strcat('var', num2str(k));
-    fplot(@(x) f.(ampstr)*exp(-(x-f.(posstr))^2/(2*f.(varstr)^2)),...
+    fplot(@(x) f{n}.(ampstr)*exp(-(x-f{n}.(posstr))^2/(2*f{n}.(varstr)^2)),...
          [x(1),x(end)]);
 end
 end
