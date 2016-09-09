@@ -5,6 +5,8 @@
 % gof = goodness of fit data
 % x = x data of the chosen interval
 % y = y data of the chosen inverval
+% amplitudes = heights of the peaks used for fitting
+% positions = positions of the peaks used for fitting
 %
 % input arguments
 %
@@ -16,7 +18,8 @@
 %                     fit
 % n = iterator to fit over a complete set of data
 
-function [f, gof, x, y] = fittingData(data, campx,...
+function [f, gof, x, y,...
+          amplitudes, positions] = fittingData(data, campx,...
                                       x_min, x_max,...
                                       numberofgaussians, n)
 
@@ -51,7 +54,7 @@ multigaussfit = fittype(fitstring);
 
 % build fitting parameters
 amplitudes = amplitude(1:numberofgaussians);
-positions = locs(index(1:numberofgaussians))';
+positions = x(locs(index(1:numberofgaussians))');
 variances = ones(1,numberofgaussians);
 
 % fitfunction -> if anything is changed, take care of the StartPoint!!!
@@ -60,6 +63,6 @@ variances = ones(1,numberofgaussians);
                    'StartPoint',...
                    [1,...
                    amplitudes,...
-                   x(positions),...
+                   positions,...
                    variances,...
                    0]);

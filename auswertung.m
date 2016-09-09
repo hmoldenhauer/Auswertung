@@ -38,7 +38,7 @@ addpath(genpath('..\Auswertung\'));
 
 % fit all the spectra
 for n = 1:spectra-120
-    [ftemp, goftemp, x, y] = fittingData(data(3), campx,...
+    [ftemp, goftemp, x, y, amps, pos] = fittingData(data(3), campx,...
                                          x_min, x_max,...
                                          numberofgaussians, n);
     % save fit data of all fits
@@ -50,7 +50,7 @@ end
 % plot fit
 hold on;
 plot(ftemp,x,y);
-plot(x,y, 'ro'); % -> peak positions are not returned yet
+plot(pos,amps, 'ro');
 
 % plot seperate fit functions used
 if false
