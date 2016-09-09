@@ -1,18 +1,36 @@
-function [f, gof, x, y] = fittingData(data, x_min, x_max, numberofgaussians, n)
+% function that will allow fitting to specified fittype
+%
+% output arguments
+% f = fit data
+% gof = goodness of fit data
+% x = x data of the chosen interval
+% y = y data of the chosen inverval
+% amplitudes = heights of the peaks used for fitting
+% positions = positions of the peaks used for fitting
+%
+% input arguments
+%
+% data = all measured data read in before
+% campx = number of pixels the camera has
+% x_min = min x value
+% x_max = max x value
+% numberofgaussians = number of gaussian functions which will be used to
+%                     fit
+% n = iterator to fit over a complete set of data
 
-% find out number of pixels of the CCD and the number of spectra
-[campx, spectra] = size(data.XData);
+function [f, gof, x, y,...
+          amplitudes, positions] = fittingData(data, campx,...
+                                      x_min, x_max,...
+                                      numberofgaussians, n)
 
 % define some helping variables
-limit = (n-1)*campx;
-lower = 1 + limit;
+lower = 1 + (n-1)*campx;
 upper = n*campx;
 
 % find starting parameters in given intervall
 x = data.XData(lower:upper);
-x1 = data.XData(lower:upper);
 y = data.YData(lower:upper);
-x_values = x>x_min & x1<x_max;      % define intervall
+x_values = x>x_min & x<x_max;      % define intervall
 x = x(x_values);                    % set x and
 y = y(x_values);                    % y values
 
@@ -20,7 +38,7 @@ y = y(x_values);                    % y values
 yy = smooth(y);                                         % smooth the data
 [pks, locs] = findpeaks(yy,'MinPeakProminence',0.4);    % find peaks
 [amplitude, index] = sortrows([pks, locs], -1);         % sort them to fit to highest peaks
-    
+
 % build fit function dynamically for the defined number of gaussians
 fitstring = 'y0+a*x';                           % use a linear function as base
 for k = 1:numberofgaussians
@@ -36,7 +54,7 @@ multigaussfit = fittype(fitstring);
 
 % build fitting parameters
 amplitudes = amplitude(1:numberofgaussians);
-positions = locs(index(1:numberofgaussians))';
+positions = x(locs(index(1:numberofgaussians))');
 variances = ones(1,numberofgaussians);
 
 % fitfunction -> if anything is changed, take care of the StartPoint!!!
@@ -45,6 +63,6 @@ variances = ones(1,numberofgaussians);
                    'StartPoint',...
                    [1,...
                    amplitudes,...
-                   x(positions),...
+                   positions,...
                    variances,...
                    0]);
