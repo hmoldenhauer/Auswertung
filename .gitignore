@@ -1,4 +1,5 @@
 # MatLAB files
+*.asv
 
 # Windows image file caches
 Thumbs.db
