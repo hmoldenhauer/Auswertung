@@ -37,37 +37,46 @@ addpath(genpath('..\Auswertung\'));
 [campx, spectra] = size(data(3).XData);
 
 % fit all the spectra
-for n = 1:spectra-120
-    [ftemp, goftemp, x, y, amps, pos] = fittingData(data(3), campx,...
-                                         x_min, x_max,...
-                                         numberofgaussians, n);
+for n = 1:spectra
+    [ftemp, goftemp, xtemp, ytemp, ampstemp, postemp] = fittingData(data(3),...
+                                                        campx,...
+                                                        x_min, x_max,...
+                                                        numberofgaussians, n);
     % save fit data of all fits
     f{n} = ftemp;
     gof{n} = goftemp;
+    x{n} = xtemp;
+    y{n} = ytemp;
+    amps{n} = ampstemp;
+    pos{n} = postemp;
     fprintf('Fit %d of %d finished\n', n, spectra);
-end
     
-% plot fit
-hold on;
-plot(f{n},x,y);
-plot(pos,amps, 'ro');
-
-% plot seperate fit functions used
-if true
-for k = 1:numberofgaussians
-    if k == 1
-        fplot(@(x) f{n}.('y0')+f{n}.('a')*x,...
-             [x(1),x(end)]);
+    if mod(n,10) == 0
+        figure;
+        % plot fit
+        hold on;
+        plot(f{n},x{n},y{n});
+        plot(pos{n},amps{n}, 'ro');
+        
+        % plot seperate fit functions used
+        if true
+            for k = 1:numberofgaussians
+                if k == 1
+                    fplot(@(x) f{n}.('y0')+f{n}.('a')*x,...
+                        [x{n}(1),x{n}(end)]);
+                end
+                ampstr = strcat('amp', num2str(k));
+                posstr = strcat('pos', num2str(k));
+                varstr = strcat('var', num2str(k));
+                fplot(@(x) f{n}.(ampstr)*exp(-(x-f{n}.(posstr))^2/(2*f{n}.(varstr)^2)),...
+                    [x{n}(1),x{n}(end)]);
+            end
+        end
+        hold off;
+        fprintf('Plot %d of %d finished\n', n, spectra);
+        
     end
-    ampstr = strcat('amp', num2str(k));
-    posstr = strcat('pos', num2str(k));
-    varstr = strcat('var', num2str(k));
-    fplot(@(x) f{n}.(ampstr)*exp(-(x-f{n}.(posstr))^2/(2*f{n}.(varstr)^2)),...
-         [x(1),x(end)]);
 end
-end
-hold off;
-fprintf('Plot %d of %d finished\n', n, spectra);
 
 % ----------------------------------------------------------------------
 % Ploting the whole stuff
