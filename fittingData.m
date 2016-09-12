@@ -30,7 +30,7 @@ upper = n*campx;
 % find starting parameters in given intervall
 x = data.XData(lower:upper);
 y = data.YData(lower:upper);
-x_values = x>x_min & x<x_max;      % define intervall
+x_values = x>x_min & x<x_max;       % define intervall
 x = x(x_values);                    % set x and
 y = y(x_values);                    % y values
 

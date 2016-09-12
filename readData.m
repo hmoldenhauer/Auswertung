@@ -5,7 +5,7 @@
 %                                           same directory as the
 %                                           subfolders)
 
-function [data, measurements] = readData(datafolder, tempfreqfile)
+function data = readData(datafolder, tempfreqfile)
 
 % add datafolder and all subfolders to path in order to access all data
 alldatafolder = genpath(datafolder);            % generate folder list

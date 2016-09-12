@@ -24,12 +24,12 @@ addpath(genpath('..\Auswertung\'));
 % ----------------------------------------------------------------------
 
 % read the data
-[data, measurements] = readData(datafolder, 'Temp-Freq.txt');
+%data = readData(datafolder, 'Temp-Freq.txt');
 
 % ----------------------------------------------------------------------
 % Fitting the data
 % ----------------------------------------------------------------------
-for m  = 1:3
+for m  = 1:3    % data(end).Measurement
 % find out number of pixels of the CCD and the number of spectra
 [campx, spectra] = size(data(m).XData);
 
@@ -40,33 +40,33 @@ for n = 1:spectra
                                                         x_min, x_max,...
                                                         numberofgaussians, n);
     % save fit data of all spectra
-    f{n} = ftemp;
-    gof{n} = goftemp;
-    x{n} = xtemp;
-    y{n} = ytemp;
-    amps{n} = ampstemp;
-    pos{n} = postemp;
+    f{m,n} = ftemp;
+    gof{m,n} = goftemp;
+    x{m,n} = xtemp;
+    y{m,n} = ytemp;
+    amps{m,n} = ampstemp;
+    pos{m,n} = postemp;
     fprintf('Fit %d of %d finished\n', n, spectra);
     
     % plot each 10th fit in a new figure
     if mod(n,30) == 0 | n == 1
         figure;
         hold on;
-        plot(f{n},x{n},y{n});
-        plot(pos{n},amps{n}, 'ro');
+        plot(f{m,n},x{m,n},y{m,n});
+        plot(pos{m,n},amps{m,n}, 'ro');
         
         % plot seperate fit functions used
         if true
             for k = 1:numberofgaussians
                 if k == 1
-                    fplot(@(x) f{n}.('y0')+f{n}.('a')*x,...
-                        [x{n}(1),x{n}(end)]);
+                    fplot(@(x) f{m,n}.('y0')+f{m,n}.('a')*x,...
+                        [x{m,n}(1),x{m,n}(end)]);
                 end
                 ampstr = strcat('amp', num2str(k));
                 posstr = strcat('pos', num2str(k));
                 varstr = strcat('var', num2str(k));
-                fplot(@(x) f{n}.(ampstr)*exp(-(x-f{n}.(posstr))^2/(2*f{n}.(varstr)^2)),...
-                    [x{n}(1),x{n}(end)]);
+                fplot(@(x) f{m,n}.(ampstr)*exp(-(x-f{m,n}.(posstr))^2/(2*f{m,n}.(varstr)^2)),...
+                    [x{m,n}(1),x{m,n}(end)]);
             end
         end
         xlabel('Wavelength (nm)');
@@ -88,7 +88,7 @@ if false
     legend_vec = [];
 
     % iterate over all data
-    for k = 1:measurements
+    for k = 1:data(end).Measurement
         for n = 1:size(data(k).XData,2)
             % plot all data
             plot(data(k).XData((1+(n-1)*campx):(n*campx)),...
