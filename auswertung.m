@@ -5,15 +5,12 @@
 % define name of the folder with data of interest
 datafolder = '..\..\Messdaten\2016-05-09-CuBO-T-and-PL\';
 
-% define the starting number
-start = 1;
-
 % define how many gaussian functions should be used
 numberofgaussians = 2;
 
 % define range for fit window
-x_min = 0; % 896
-x_max = 1000; % 911
+x_min = 896; % 896
+x_max = 911; % 911
 
 % ----------------------------------------------------------------------
 % Definitions needed by the program
@@ -27,22 +24,22 @@ addpath(genpath('..\Auswertung\'));
 % ----------------------------------------------------------------------
 
 % read the data
-%[data, measurements] = readData(datafolder, 'Temp-Freq.txt');
+[data, measurements] = readData(datafolder, 'Temp-Freq.txt');
 
 % ----------------------------------------------------------------------
 % Fitting the data
 % ----------------------------------------------------------------------
-
+for m  = 1:3
 % find out number of pixels of the CCD and the number of spectra
-[campx, spectra] = size(data(3).XData);
+[campx, spectra] = size(data(m).XData);
 
 % fit all the spectra
 for n = 1:spectra
-    [ftemp, goftemp, xtemp, ytemp, ampstemp, postemp] = fittingData(data(3),...
+    [ftemp, goftemp, xtemp, ytemp, ampstemp, postemp] = fittingData(data(m),...
                                                         campx,...
                                                         x_min, x_max,...
                                                         numberofgaussians, n);
-    % save fit data of all fits
+    % save fit data of all spectra
     f{n} = ftemp;
     gof{n} = goftemp;
     x{n} = xtemp;
@@ -51,9 +48,9 @@ for n = 1:spectra
     pos{n} = postemp;
     fprintf('Fit %d of %d finished\n', n, spectra);
     
-    if mod(n,10) == 0
+    % plot each 10th fit in a new figure
+    if mod(n,30) == 0 | n == 1
         figure;
-        % plot fit
         hold on;
         plot(f{n},x{n},y{n});
         plot(pos{n},amps{n}, 'ro');
@@ -72,11 +69,16 @@ for n = 1:spectra
                     [x{n}(1),x{n}(end)]);
             end
         end
+        xlabel('Wavelength (nm)');
+        ylabel('Intensity (cps)');
+        title(['m = ' num2str(m) ' n = ' num2str(n)]);
         hold off;
         fprintf('Plot %d of %d finished\n', n, spectra);
-        
     end
 end
+end
+
+clear -regexpr *temp *str spectra campx k m n
 
 % ----------------------------------------------------------------------
 % Ploting the whole stuff
@@ -86,7 +88,7 @@ if false
     legend_vec = [];
 
     % iterate over all data
-    for k = start:measurements
+    for k = 1:measurements
         for n = 1:size(data(k).XData,2)
             % plot all data
             plot(data(k).XData((1+(n-1)*campx):(n*campx)),...
