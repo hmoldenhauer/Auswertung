@@ -24,7 +24,7 @@ addpath(genpath('..\Auswertung\'));
 % ----------------------------------------------------------------------
 
 % read the data
-data = readData(datafolder, 'details_matlab.txt');
+%data = readData(datafolder, 'details_matlab.txt');
 
 % ----------------------------------------------------------------------
 % Fitting the data
@@ -35,7 +35,7 @@ for m = 1:data(end).Measurement
     [campx, spectra] = size(data(m).XData);
     
     % fit all the spectra
-    for n = 1:10:spectra
+    for n = 1:9:spectra
         [ftemp, goftemp, xtemp, ytemp, ampstemp, postemp] = fittingData(data(m),...
                                                             campx,...
                                                             x_min, x_max,...
@@ -51,7 +51,7 @@ for m = 1:data(end).Measurement
          
          if xtemp == 0
          % plot each 10th fit in a new figure
-         elseif mod(n,30) == 0 | n == 1
+         elseif mod(n,10) == 0 | n == 1
              figure;
              hold on;
              plot(f{m,n},x{m,n},y{m,n});

@@ -46,7 +46,7 @@ if isempty(yy)
     amplitudes = 0;
     positions = 0;
 else
-    [pks, locs] = findpeaks(yy,'MinPeakProminence',0.4);    % find peaks
+    [pks, locs] = findpeaks(yy,'MinPeakProminence',0.5);    % find peaks
     [amplitude, index] = sortrows([pks, locs], -1);         % sort them to fit to highest peaks
     
     fitstring = 'y0+a*x';                                   % use a linear function as base
