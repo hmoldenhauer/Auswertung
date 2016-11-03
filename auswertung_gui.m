@@ -137,10 +137,7 @@ function popup_temp_Callback(source,eventdata)
     hPLvsL.XLim = [x_l(1), x_r(1)];
     
     % update ODMR signal plot
-    [X, Y, Z] = update_Data(current_temp);
-    % find all data in range
-    indices = find(X > hIvsL.XLim(1) & X < hIvsL.XLim(2));
-    plotBvsI(Y, Z(indices,:));
+    update_BvsI();
 end
 
 function left_slider_Callback(source,eventdata)
@@ -166,10 +163,7 @@ function left_slider_Callback(source,eventdata)
     htxt_l_label.String = num2str(source.Value);
     
     % update ODMR signal plot
-    [X, Y, Z] = update_Data(current_temp);
-    % find all data in range
-    indices = find(X > hIvsL.XLim(1) & X < hIvsL.XLim(2));
-    plotBvsI(Y, Z(indices,:));
+    update_BvsI();
 end
 
 function right_slider_Callback(source,eventdata)
@@ -195,10 +189,7 @@ function right_slider_Callback(source,eventdata)
     htxt_r_label.String = num2str(source.Value);
     
     % update ODMR signal plot
-    [X, Y, Z] = update_Data(current_temp);
-    % find all data in range
-    indices = find(X >= hIvsL.XLim(1) & X <= hIvsL.XLim(2));
-    plotBvsI(Y, Z(indices,:));
+    update_BvsI();
 end
 
 function [X, Y, Z, PL_on, PL_off] = update_Data(current_temp)
@@ -222,6 +213,14 @@ function [X, Y, Z, PL_on, PL_off] = update_Data(current_temp)
     PL_on = data(k_on).YData;
     PL_off = data(k_off).YData;
     Z = PL_on - PL_off;
+end
+
+function update_BvsI()
+    % update Data
+    [X, Y, Z] = update_Data(current_temp);
+    % find all data in range
+    indices = find(X > hIvsL.XLim(1) & X < hIvsL.XLim(2));
+    plotBvsI(Y, Z(indices,:));
 end
 
 function I = integrate(Y, Z)

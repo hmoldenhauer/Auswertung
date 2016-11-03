@@ -43,7 +43,7 @@ data = struct(field1,value1,...
               field9,value9,...
               field10,value10);
           
-% read temperatures and frequencies
+% read temperatures, frequencies and other stuff
 fileID = fopen(strcat(datafolder, details));
 C = textscan(fileID, '%d %d %f %f %s %f %s');
 fclose(fileID);
