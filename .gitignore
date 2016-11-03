@@ -2,8 +2,7 @@
 *.asv
 
 # Windows image file caches
-Thumbs.db
-ehthumbs.db
+*.db
 
 # Folder config file
 Desktop.ini
@@ -19,6 +18,10 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+#figures and pdf
+*.png
+*.pdf
 
 # =========================
 # Operating System Files
