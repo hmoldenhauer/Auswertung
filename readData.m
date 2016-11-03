@@ -30,7 +30,7 @@ field6 = 'Field';       value6 = [];    % starting value for magnetic field
 field7 = 'Step';        value7 = [];    % step size of B-field
 field8 = 'Freq';        value8 = [];    % frequency of generator
 field9 = 'PL';          value9 = [];    % 1 is PL, 0 differencial signal
-field10 = 'OCE';         value10 = [];    % 0 is off, 1 is cw, 2 is external
+field10 = 'OCE';         value10 = [];  % 0 is off, 1 is cw, 2 is external
 
 data = struct(field1,value1,...
               field2,value2,...

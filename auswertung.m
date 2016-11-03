@@ -29,8 +29,10 @@ addpath(genpath('..\Auswertung\'));
 %data = readData(datafolder, 'details_matlab.txt');
 
 % ----------------------------------------------------------------------
-% plotting the raw data
+% plotting the raw data with UI
 % ----------------------------------------------------------------------
+
+auswertung_gui(data);
 
 % ----------------------------------------------------------------------
 % Fitting the data
@@ -93,7 +95,7 @@ end
 % ----------------------------------------------------------------------
 % Ploting the whole stuff
 % ----------------------------------------------------------------------
-if true
+if false
     % plot heat map of each PL measurement
     for k = 4%:data(end).Measurement
         if data(k).PL == 1
