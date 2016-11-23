@@ -4,6 +4,8 @@
 
 % define name of the folder with data of interest
 datafolder = '..\..\Messdaten\2016-05-09-CuBO-T-and-PL\';
+    % careful:  '/' for unix
+    %           '\' for windows
 
 % define how many gaussian functions should be used
 numberofgaussians = 2;
@@ -27,8 +29,15 @@ addpath(genpath('..\Auswertung\'));
 %data = readData(datafolder, 'details_matlab.txt');
 
 % ----------------------------------------------------------------------
+% plotting the raw data with UI
+% ----------------------------------------------------------------------
+
+auswertung_gui(data);
+
+% ----------------------------------------------------------------------
 % Fitting the data
 % ----------------------------------------------------------------------
+if false
 for m = 1:data(end).Measurement
     if data(m).PL == 1
     % find out number of pixels of the CCD and the number of spectra
@@ -82,22 +91,39 @@ for m = 1:data(end).Measurement
 end
 
 clear -regexpr *temp *str spectra campx k m n
-
+end
 % ----------------------------------------------------------------------
 % Ploting the whole stuff
 % ----------------------------------------------------------------------
 if false
+    % plot heat map of each PL measurement
+    for k = 4%:data(end).Measurement
+        if data(k).PL == 1
+            figure;
+            X = data(k).XData(1:campx);
+            
+            step = data(k).Step;
+            field = data(k).Field;
+            Y = (field:step:field+step*(size(data(k).XData,2)-1));
+            Z = data(k).YData;
+            
+            imagesc(X,Y,Z');
+            colormap(hsv(1000));
+        end
+    end
+end
+
+if false  
     hold on;
     legend_vec = [];
-
-    % iterate over all data
-    for k = 1:data(end).Measurement
+    
+    for k = 4%:data(end).Measurement
         for n = 1:size(data(k).XData,2)
             % plot all data
             plot(data(k).XData((1+(n-1)*campx):(n*campx)),...
                  data(k).YData((1+(n-1)*campx):(n*campx)));
             % generate legend vector
-            legend_vec = [legend_vec;[k],[n]];
+            legend_vec = [legend_vec;[(data(k).Field+(n-1)*data(k).Step)]];
         end
     end
     % create legend
