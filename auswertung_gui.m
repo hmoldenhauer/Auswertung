@@ -62,7 +62,35 @@ htxt_r  = uicontrol('Style', 'text',...
 htxt_r_label  = uicontrol('Style', 'text',...
                     'Position', [600,100,70,15],...
                     'String', num2str(hright.Value));
-
+                
+% Create labels for results
+htxt_Imax  = uicontrol('Style', 'text',...
+                    'Position', [600,550,70,15],...
+                    'String', 'I_max');
+htxt_Imax_label  = uicontrol('Style', 'text',...
+                    'Position', [670,550,70,15],...
+                    'String', num2str(0));
+htxt_pos  = uicontrol('Style', 'text',...
+                    'Position', [600,525,70,15],...
+                    'String', 'Position');
+htxt_pos_label  = uicontrol('Style', 'text',...
+                    'Position', [670,525,70,15],...
+                    'String', num2str(0));
+                
+% Create labels for fit results
+htxt_Ifit  = uicontrol('Style', 'text',...
+                    'Position', [600,475,70,15],...
+                    'String', 'I_fit');
+htxt_Ifit_label  = uicontrol('Style', 'text',...
+                    'Position', [670,475,70,15],...
+                    'String', num2str(0));
+htxt_posfit  = uicontrol('Style', 'text',...
+                    'Position', [600,450,70,15],...
+                    'String', 'fit Position');
+htxt_posfit_label  = uicontrol('Style', 'text',...
+                    'Position', [670,450,70,15],...
+                    'String', num2str(0));
+                
 % Create B vs lambda
 hBvsL   = axes('Units', 'pixels',...
                'Position', [60,270,300,300]);
@@ -81,6 +109,9 @@ hPLvsL   = axes('Units', 'pixels',...
 % ----------------------------------------------------------------------
 
 plotODMR(current_temp);
+    
+% plot B vs I
+plotBvsI(Y, Z);
 
 % plot lines in overview
 hBvsL_line_l = line(hBvsL, [hleft.Value,hleft.Value], hBvsL.YLim,...
@@ -237,14 +268,41 @@ function plotBvsI(Y, Z)
     plot(hBvsI,I,Y);
     
     % fit gaussian to plot
-    %hold(hBvsI, 'on');
-    pks = abs(max(I));                          % find peaks
-    %result = fit(Y',I,...
-    %    'y0+a1*x+amp*exp(-(x-pos)^2/(2*var^2))');
-    %B_fit = [Y(1):((Y(end)-Y(1))/100):Y(end)];
-    %I_fit = feval(result, B_fit);
-    %plot(hBvsI, I_fit, B_fit, 'r');
-    %hold(hBvsI, 'off');
+    pks_min = min(I);           % find peak
+    pks_max = max(I);
+    if abs(pks_min) < pks_max
+        pks = pks_max;
+    else
+        pks = pks_min;
+    end
+    position = Y(find(I == pks));    % find index
+    ystart = mean(I);           % mean
+    var = 0.05;
+    
+    % fit gaussian
+    result = fit(Y',I,...
+        'y0+a1*x+amp*exp(-(x-pos)^2/(2*var^2))',...
+        'StartPoint',...
+        [1,...          % a1
+        pks(1),...         % amp
+        position(1),...    % position
+        var,...         % var
+        ystart]);       % y0
+    B_fit = [Y(1):((Y(end)-Y(1))/100):Y(end)];
+    I_fit = feval(result, B_fit);
+    
+    htxt_Imax_label.String = num2str(pks);
+    htxt_pos_label.String = num2str(position);
+    
+    htxt_Ifit_label.String = num2str(result.amp);
+    htxt_posfit_label.String = num2str(result.pos);
+    
+    hold(hBvsI, 'on');
+    % plot fit
+    plot(hBvsI, I_fit, B_fit, 'r');
+    % plot I_max
+    plot(hBvsI, pks, position, 'ob');
+    hold(hBvsI, 'off');
     
     % plot configuration
     hBvsI.YLim = hBvsL.YLim;
@@ -269,9 +327,6 @@ function plotODMR(current_temp)
     hBvsL.YLabel.String = 'B (T)';          % y label
     hBvsLc = colorbar(hBvsL);               % add a colorbar
     hBvsLc.Label.String = 'Intensity (cps)';% title of colorbar
-    
-    % plot B vs I
-    plotBvsI(Y, Z);
     
     % plot I vs wavelength
     plot(hIvsL,X,Z);
